@@ -14,7 +14,11 @@ public class Homework5 {
         float [] data2 = createArray(SIZE);
         measureTime(() ->parallelMethod(data2), "parallelMethod");
 
-        System.out.println("Arrays are equal: " + Arrays.equals(data1,data2));
+        if (Arrays.equals(data1,data2)){
+            System.out.println("Массивы равны");
+        } else {
+            System.out.println("Массивы не равны");
+        }
     }
 
     private static void sequentialMethod (float[] data) {
@@ -66,6 +70,6 @@ public class Homework5 {
         action.run();
         long finish = System.nanoTime();
         long duration = finish - start;
-        System.out.printf("Method '%s' took %d ms%n",actionName, TimeUnit.NANOSECONDS.toMillis(duration));
+        System.out.printf("Метод '%s' занял %d мс%n",actionName, TimeUnit.NANOSECONDS.toMillis(duration));
     }
 }
