@@ -1,42 +1,29 @@
-package lession6.server;
-
+package lession6.client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class EchoServer {
-    private static final int DEFAULT_PORT = 8189;
-
+public class Client {
     public static void main(String[] args) throws IOException {
-        int port = DEFAULT_PORT;
-        if (args.length !=0) {
-            port = Integer.parseInt(args[0]);
-        }
-        new EchoServer().start(port);
+        new Client().start("localHost",8189);
     }
-
-    public void start(int port) throws IOException {
-        ServerSocket socket = null;
-        Socket clientSocket = null;
+    public void start(String host,int port) throws IOException {
+        Socket socket = null;
         Thread inputThread = null;
         try {
-            socket = new ServerSocket(port);
-            System.out.println("Сервер запущен.");
-            clientSocket = socket.accept();
-            System.out.println("Клиент подключился.");
-            DataInputStream in = new DataInputStream(clientSocket.getInputStream());
-            DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
+            socket = new Socket(host, port);
+            System.out.println("Клиент запущен");
+            DataInputStream in = new DataInputStream(socket.getInputStream());
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
             inputThread = runInputThread(in);
             runOutputLoop(out);
-        } catch (IOException e) {
-            e.printStackTrace();
+
+
         } finally {
             if (inputThread != null) inputThread.interrupt();
-            if (clientSocket != null) clientSocket.close();
             if (socket != null) socket.close();
         }
     }
@@ -57,7 +44,7 @@ public class EchoServer {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     String message = in.readUTF();
-                    System.out.println("From client " + message);
+                    System.out.println("From server: " + message);
                     if (message.equals("/end")) {
                         System.exit(0);
                     }
